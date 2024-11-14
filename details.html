@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <title>Pexels details</title>
+</head>
+
+<body> <!-- questyo HTML viene creato per agganciarsi all'azione dell'ONCLICK precedentremente creato in JS dove si creerà un nuovo contenitore per ingrandire l'IMG della CARD-DINAMICA cliccata.-->
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div id="photo-container" class="col-md-8">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        const URL = "https://api.pexels.com/v1/photos/" //qui inseriamo un nuovo URL fornito dal sito, che ci riporterà direttamente e d esclusivamnete le IMG
+        const params = new URLSearchParams(window.location.search) // qui attendiamo la funzione click creata in js 
+        const pexelsId = params.get("pexelsId") // qui si crea questa CONST per assegnare l'ID delle IMG (PROCESSO OBBLIGATORIO DEL SITO)
+
+        window.addEventListener("DOMContentLoaded", function () { // con questa funzione ascoltiamo i processi del nostro Dom 
+
+            fetch(URL + pexelsId, { //metodo FETCH(), dove richiediamo al server l'URL + pexelsId (per prelevare l'ID delle IMG)(pexelsId in questo caso  richiesta obbligatoria del server), con GET sottoinsteso (quando non è specificato è di default)
+                headers: {
+                    Authorization: "OCl0zDFIYleugZkSUfoa2azhKhwtwRGWneqlTBwSQh8Qo25KYeNkpu2x" // QUI SPECIFICHIAMO LA NOSTRA CHIAVE DI AUTORIZZAZIONE FORNITA DAL SERVER
+                }
+            })
+                .then(resp => resp.json()) // questo THEN ci assicura di ricevere i dati dal server da noi richiesti prima, e di tradurli in formato JSON 
+                .then(photo => {
+
+                    const photoContainer = document.getElementById("photo-container")// qui richiamiamo il contenitore, che ci serviranno a creare la pagina  (dall'HTML PEXELS-START)
+                    const img = document.createElement("img")// dove gli iseriremo la foto 
+                    img.src = photo.src.large// in formato large
+                    img.style.width = "100%"// con il suo 100% di grandezza
+
+                    const p = document.createElement("p")// qui gli creamo una P dove iseriremo il nome della IMG
+                    p.innerText = photo.photographer
+
+                    photoContainer.appendChild(img)
+                    photoContainer.appendChild(p) 
+                    // qui agganceremo gli elementi IMG E P al container (photoContainer) così da posizionarli correttamente
+                    document.body.style.backgroundColor = photo.avg_color// qui abbianiamo ad ogni IMG una colore di background adeguato 
+                })
+        })
+    </script>
+</body>
+
+</html>
